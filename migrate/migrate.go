@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"todo-deck-api/backend/db"
-	"todo-deck-api/backend/model"
+	"todo-deck-api/db"
+	"todo-deck-api/model"
 )
 
 func main() {

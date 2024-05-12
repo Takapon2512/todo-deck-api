@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"todo-deck-api/backend/db"
-	"todo-deck-api/backend/model"
+	"todo-deck-api/db"
+	"todo-deck-api/model"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
