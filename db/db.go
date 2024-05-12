@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func NewDB() *gorm.DB {
@@ -26,15 +27,18 @@ func NewDB() *gorm.DB {
 	// DSN (Data Source Name) の構築
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
 
-	// GORMを使ってデータベース接続
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatalln(err)
+	// GORMを使ってデータベース接続（接続できない時があるので、5回までリトライする機能を実装）
+	for i := 0; i < 5; i++ {
+		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err == nil {
+			fmt.Println("Connected to database")
+			return db
+		}
+		fmt.Println("Retrying to connect to database")
+		time.Sleep(5 * time.Second)
 	}
-	fmt.Println("Connected")
-
-	// 接続が成功したデータベースオブジェクトを返す
-	return db
+	log.Fatalf("Failed to connect to database: %v", err)
+	return nil
 }
 
 func CloseDB(db *gorm.DB) {
